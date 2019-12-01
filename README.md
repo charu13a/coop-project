@@ -2,6 +2,9 @@
 Author: Charu Agarwal (160010038)  
 Guided By: Prof Prabuchandran KJ, Prof Sudheendra Hangal  
 
+## Project Description
+An exploration of machine learning techniques for knowledge games.
+
 ## Directory structure
 ```
 .  
