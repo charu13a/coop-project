@@ -1,0 +1,29 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Our key contributions}{section.1}% 2
+\BOOKMARK [2][-]{subsection.1.2}{Organization of the report}{section.1}% 3
+\BOOKMARK [1][-]{section.2}{Related Work}{}% 4
+\BOOKMARK [1][-]{section.3}{Methodology}{}% 5
+\BOOKMARK [2][-]{subsection.3.1}{Word Embeddings}{section.3}% 6
+\BOOKMARK [2][-]{subsection.3.2}{Finding related words}{section.3}% 7
+\BOOKMARK [2][-]{subsection.3.3}{Using clues to disambiguate words}{section.3}% 8
+\BOOKMARK [3][-]{subsubsection.3.3.1}{Generating noun-phrases from clues and answers}{subsection.3.3}% 9
+\BOOKMARK [2][-]{subsection.3.4}{Method of combining clue and answers}{section.3}% 10
+\BOOKMARK [2][-]{subsection.3.5}{Processing results}{section.3}% 11
+\BOOKMARK [2][-]{subsection.3.6}{Ranking of result words.}{section.3}% 12
+\BOOKMARK [1][-]{section.4}{Training on domain-specific corpus}{}% 13
+\BOOKMARK [2][-]{subsection.4.1}{Preprocessing}{section.4}% 14
+\BOOKMARK [3][-]{subsubsection.4.1.1}{Stopwords}{subsection.4.1}% 15
+\BOOKMARK [3][-]{subsubsection.4.1.2}{Frequency based filtering}{subsection.4.1}% 16
+\BOOKMARK [2][-]{subsection.4.2}{Result}{section.4}% 17
+\BOOKMARK [2][-]{subsection.4.3}{Initializing weights before training}{section.4}% 18
+\BOOKMARK [3][-]{subsubsection.4.3.1}{Similarity based filtering}{subsection.4.3}% 19
+\BOOKMARK [3][-]{subsubsection.4.3.2}{Searching in model before adding to vocabulary}{subsection.4.3}% 20
+\BOOKMARK [2][-]{subsection.4.4}{Effect of training time}{section.4}% 21
+\BOOKMARK [1][-]{section.5}{Deriving relations between clues and answers}{}% 22
+\BOOKMARK [1][-]{section.6}{System Development}{}% 23
+\BOOKMARK [2][-]{subsection.6.1}{API}{section.6}% 24
+\BOOKMARK [2][-]{subsection.6.2}{GUI}{section.6}% 25
+\BOOKMARK [2][-]{subsection.6.3}{Timing issues}{section.6}% 26
+\BOOKMARK [1][-]{section.7}{Discussion}{}% 27
+\BOOKMARK [1][-]{section.8}{Conclusions and Future Work}{}% 28
+\BOOKMARK [1][-]{section.9}{Acknowledgements}{}% 29

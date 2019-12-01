@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+    <title>Word Recommender</title>
+    <style>
+      .progress-bar.indeterminate {
+        position: relative;
+        animation: progress-indeterminate 3s linear infinite;
+      }
+
+      @keyframes progress-indeterminate {
+         from { left: -25%; width: 25%; }
+         to { left: 100%; width: 25%;}
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <a class="navbar-brand" href="#" style="font-size:15px;">CROSSWORD RECOMMENDATION SYSTEM</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </nav>
+    <div class="container" style="padding-top:24px;">
+      <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-body col-12">
+                    <form>
+                        <div class="form-group">
+                            <label for="crosswordInput">Crossword Input</label>
+                            <textarea class="form-control" id="crosswordInput" rows="10"></textarea>
+                            <small id="inputHelp" class="form-text text-muted">Enter input in the format "answer|clue" separated by newlines. Example: <br>
+                              Porbandar | Gandhi's birthplace <br>
+                              Putli_Bai | Gandhi's mother 
+                            </small>
+                        </div>
+                          <div class="form-check">
+                            <input type="checkbox" class="form-check-input" id="exampleCheck1" checked="true">
+                            <label class="form-check-label" for="exampleCheck1">Use Clues</label>
+                          </div>
+                        <button type="submit" class="btn" onclick="return getSuggestions('/similar-words-new')" style="background-color:#e08700;color:#f7f7f7;font-size: 13px;">SUBMIT_NEW</button>
+                                                <button class="btn" onclick="return getSuggestions('/similar-words')" style="background-color:#e08700;color:#f7f7f7;font-size: 13px;">SUBMIT</button>
+                                                <button class="btn" onclick="clearWords()" style="border-color:#e08700;color:#e08700;font-size: 13px;">CLEAR</button>
+            
+                         <div class="dropdown" style="display:inline;
+float:right;"> <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons">more_vert</i> </button> <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"><button class="btn" data-toggle="modal" data-target="#myModal" id="see-clue-nouns">See Clue Nouns</button></div></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-8 offset-md-2">
+                                      <div class="progress" style="position: relative;height: 2px;display: none;" id="progress-bar">
+      <div class="progress-bar progress-bar-striped indeterminate">
+      </div>
+    </div>
+            <div class="card col-12">
+                <div class="card-header" style="background-color:#ffffff;" id="suggested-words">
+                  Suggested Words
+                </div>
+                <div class="alert alert-primary" role="alert" id="words-not-present" style="display:none">
+                </div>
+
+                <ul class="list-group list-group-flush" id="results-list">
+                </ul>
+              </div>
+        </div>
+      </div>
+      <div class="row" style="padding-top: 24px;">
+          <div class="col-md-8 offset-md-2" style="font-size: 13px;color:#233f70;text-align: center;">
+              This crossword recommendation system suggests similar words for a crossword 
+              based on careful analysis of the words and/or clues. Note that the words may be case-sensitive.
+          </div>
+        </div>
+    </div>
+
+      <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-body">
+          <p>Following clue nouns were generated:</p>
+          <div id="clue-nouns"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script>
+      function hsl_col_perc(percent, start, end) {
+        var a = percent / 100,
+            b = (end - start) * a,
+            c = b + start;
+
+        // Return a CSS HSL string
+        return 'hsl('+c+', 100%, 50%)';
+      }
+      function getSuggestions(url){
+        var input = $('#crosswordInput').val().split("\n");
+        var words_list = []
+        var clues_list = []
+        query=""
+        $.each(input, function(k){
+              if(input[k] !== "") {
+                input_k = input[k].split('|');
+                var word = input_k[0].trim();
+                word =  word.split(' ').join('_'); // answers become phrases
+                 words_list.push(word);
+                 var clue = "";
+                if(input_k.length > 1){
+                  clue = input_k[1].trim();
+                  clue = clue.split('-').join('_'); // hyphen words become phrases
+                }
+                if($('#exampleCheck1'). prop("checked") == true){
+                  clues_list.push(clue);
+                  query = query + "&words="+word+"&clues="+clue;
+                }
+                else{
+                  query = query + "&words="+word;
+                }
+              }
+           });
+        $("#results-list").empty();
+        $("#words-not-present").empty();
+        $("#words-not-present").hide();
+        $("#progress-bar").show();
+        $("#suggested-words a").remove();
+        $("#clue-nouns").empty();
+        $.ajax({
+          url: url,
+          type: 'get',
+          data: {
+            'words': words_list,
+            'clues': clues_list,
+          },
+          traditional: true,
+          success: function (data) {
+            var i;
+            for (i = 0; i < data['suggested_words'].length; ++i) {
+              key = data['suggested_words'][i].replace(/ /g, '_');
+              var why = '';
+              var j;
+              var avg_percent = 0;
+              for (j = 0; j < data['words_map'][key].length; ++j) {
+                data['words_map'][key][j][1] = Math.round(data['words_map'][key][j][1] * 100) / 100
+                avg_percent += data['words_map'][key][j][1]
+                why += '<a class="dropdown-item" href="#">'+ data['words_map'][key][j] + "</a>";
+              }
+              sum_similarity = avg_percent
+              avg_percent /= data['words_map'][key].length
+              avg_percent *= 100
+              $("#results-list").append('<div class="row" data-sort="'+data['words_map'][key].length+'"><div class="col-8"><button type="button" class="list-group-item list-group-item-action" onclick="addToInput(this)">'+ data['suggested_words'][i] + '</div><div class="col-2 my-auto" style="color:' + hsl_col_perc(avg_percent, 0 /** red */, 120 /** green */) +';">' + Math.round(avg_percent * 100)/100 + '%</div>' +'</button><div class="col-2 my-auto"> <div class="dropdown"> <button class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="material-icons">help_outline</i> </button> <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"><h6 class="dropdown-header">The word was suggested due to:</h6>' + why + '</div></div></div></div>');
+       }
+       var j;
+       for(j = 0; j < data['clue_nouns'].length; ++j) {
+          var k;
+          var s = "(" + (j+1) + ")";
+          for(k=0; k < data['clue_nouns'][j].length; ++k) {
+            s += " " + data['clue_nouns'][j][k]; 
+          }
+          s+="<br>"
+          $("#clue-nouns").append(s);
+       }
+          sorted_suggestions = $('#results-list > div').sort(function (a, b) {
+              var contentA =parseInt( $(a).data('sort'));
+              var contentB =parseInt( $(b).data('sort'));
+              console.log(contentA + " " + contentB)
+              return (contentA < contentB) ? 1 : (contentA > contentB) ? -1 : 0;
+           });
+           $('#results-list').html(sorted_suggestions);
+            if(data['words_not_in_vocab'].length > 0){
+              $("#words-not-present").show();
+              $("#words-not-present").append("The following words were not present in the vocabulary: " + data["words_not_in_vocab"] + " . Please try changing the case of the words.")
+            }
+            $("#progress-bar").hide();
+            $("#suggested-words").append(
+              '<a target="_blank" href="/similar-words?'+query+'"> (View RAW) </a>')
+          }
+        });
+        return false;
+      }
+      function clearWords(){
+        $('#crosswordInput').val('');
+        $("#results-list").empty();
+        $("#words-not-present").empty();
+        $("#words-not-present").hide();
+        $("#suggested-words a").remove();
+      }
+      $( "#crosswordInput" ).on( "keypress", function(e) {
+        if(e.which == 13) {
+          getSuggestions('/similar-words-new');
+        }
+      });
+      function addToInput(currentElement) {
+         var ButtonText = currentElement.innerHTML;
+         console.log("Here"+ButtonText)
+         $( "#crosswordInput" ).val(function() {
+          if(this.value.slice(this.value.length -1) == "\n"){
+            return this.value + ButtonText + "\n";
+          }
+          return this.value + "\n" + ButtonText ;
+          });
+         var e = $.Event( "keypress", { which: 13 } );
+          $('#crosswordInput').trigger(e);
+      }
+      $("#see-clue-nouns").on("click", function(e) {
+          e.preventDefault();
+      });
+    </script>
+  </body>
+</html>
